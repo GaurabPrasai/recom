@@ -1,0 +1,11 @@
+{
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python",
+      "config": {
+        "command": "pip install -r requirements.txt && python -m pip install ."
+      }
+    }
+  ]
+}
