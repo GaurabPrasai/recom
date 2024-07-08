@@ -1,12 +1,18 @@
 {
+    "builds": [
+      {
+        "src": "api/app.py",
+        "use": "@vercel/python"
+      }
+    ],
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "app.py"
+        "dest": "api/app.py"
       }
     ],
     "functions": {
-      "app.py": {
+      "api/app.py": {
         "memory": 1024,
         "maxDuration": 60
       }
