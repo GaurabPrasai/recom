@@ -5,6 +5,18 @@ import os
 
 st.title('Movie Recommender System')
 
+def safe_load_pickle(filename):
+       with open(filename, 'rb') as f:
+           try:
+               while True:
+                   print(pickle.load(f))
+           except EOFError:
+               pass
+           except Exception as e:
+               print(f"Error: {e}")
+
+safe_load_pickle('similarity.pkl')
+
 def load_data(filename):
     if not os.path.exists(filename):
         st.error(f"Error: The file '{filename}' does not exist.")
@@ -37,6 +49,9 @@ if 'title' not in movies.columns:
 similarity = load_data('similarity.pkl')
 if similarity is None:
     st.stop()
+
+with open('similarity.pkl', 'wb') as f:
+       pickle.dump(similarity_data, f, protocol=2)
 
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
