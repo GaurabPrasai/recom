@@ -1,4 +1,3 @@
 streamlit
 pandas
 requests
-pickle==0.0.12
