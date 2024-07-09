@@ -23,7 +23,6 @@ if 'title' not in movies.columns:
 
 # Load similarity matrix
 similarity = pickle.load(open('similarity.pkl', 'rb'))
-
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
     distances = similarity[movie_index]
