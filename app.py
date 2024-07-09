@@ -17,18 +17,6 @@ def safe_load_pickle(filename):
 
 safe_load_pickle('similarity.pkl')
 
-def load_data(filename):
-    if not os.path.exists(filename):
-        st.error(f"Error: The file '{filename}' does not exist.")
-        return None
-    
-    try:
-        with open(filename, 'rb') as file:
-            data = pickle.load(file)
-        return data
-    except Exception as e:
-        st.error(f"Error loading {filename}: {str(e)}")
-        return None
 
 # Load movies data
 movies_list = load_data('movies.pkl')
