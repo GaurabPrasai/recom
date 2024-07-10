@@ -2,12 +2,21 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
+import time
+from functools import lru_cache
 
+@lru_cache(maxsize=1000)
 def fetch_poster(movie_id):
-    response = requests.get('https://api.themoviedb.org/3/movie/{}?api_key=420b8821330cec3f214163c75423281c&language=en-US'.format(movie_id))
-    data = response.json()
-    print(data)
-    return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
+    base_url = "https://image.tmdb.org/t/p/w500"
+    api_url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key=420b8821330cec3f214163c75423281c'
+    
+    try:
+        response = requests.get(api_url, timeout=2)
+        data = response.json()
+        poster_path = data.get('poster_path')
+        return f"{base_url}{poster_path}" if poster_path else None
+    except:
+        return None
 
 # Load movies data
 movies_list = pickle.load(open('movies.pkl', 'rb'))
@@ -27,16 +36,18 @@ similarity = pickle.load(open('similarity.pkl', 'rb'))
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
     distances = similarity[movie_index]
-    movie_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:6]
-
+    movies_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:6]
+    
     recommended_movies = []
     recommended_movies_posters = []
-    for i in movie_list:
+    
+    for i in movies_list:
         movie_id = movies.iloc[i[0]].movie_id
         recommended_movies.append(movies.iloc[i[0]].title)
-        # Fetch poster from API
-        recommended_movies_posters.append(fetch_poster(movie_id))
-    return recommended_movies,recommended_movies_posters
+        poster = fetch_poster(movie_id)
+        recommended_movies_posters.append(poster if poster else "https://via.placeholder.com/500x750.png?text=No+Poster")
+    
+    return recommended_movies, recommended_movies_posters
 
 st.title('Movie Recommender System')
 
