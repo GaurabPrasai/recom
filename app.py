@@ -2,7 +2,6 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
-import time
 from functools import lru_cache
 
 @lru_cache(maxsize=1000)
